@@ -23,7 +23,7 @@ import pairs from '../abi/coinage_pairs.json';
 
 import {useVercelRequest} from '../hooks/useVercel';
 import {useKVRequest} from '../hooks/useKV';
-import { walletClientToSigner, useEthersSigner} from '../hooks/useEthers';
+// import { walletClientToSigner, useEthersSigner} from '../hooks/useEthers';
 import {useAccount} from 'wagmi';
 // import {providers} from 'ethers';
 import {EmailSignup} from '../components/EmailSignup';
@@ -83,7 +83,7 @@ const Home: NextPage = () => {
   // HOOKS
   const {address, isConnected, isDisconnected} = useAccount(); // Rainbow Wallet
   const { data: walletClient } = useWalletClient({ chainId: game.chainId }) // wagmi
-  const provider = walletClient ? walletClientToSigner(walletClient) : undefined; // custom
+  // const provider = walletClient ? walletClientToSigner(walletClient) : undefined; // custom
 
   const {loading, entries, postScore} = useVercelRequest();
   const {attempts, getAttempts, increment, decrement } = useKVRequest(address || 'unknown');
