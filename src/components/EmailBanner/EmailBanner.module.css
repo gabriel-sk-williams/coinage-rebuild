@@ -1,0 +1,10 @@
+.innerWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 820px) {
+  .innerWrapper {
+    flex-direction: row;
+  }
+}

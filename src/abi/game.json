@@ -1,0 +1,55 @@
+{  
+  "chain": "ethereum",
+  "chainId": 1,
+  "duration": 120,
+  "noq": 1009,
+  "contractAddress": "68C64B65f5960E28BeD8eaf364D37c2e440f8fa0",
+  "initialQuestion": "Welcome to Coinage Trivia",
+  "initialAnswer": "",
+  "hasEth": [
+    { 
+      "contractAddress": "",
+      "standardContractType": "",
+      "chain": "ethereum",
+      "method": "eth_getBalance",
+      "parameters": [
+        ":userAddress",
+        "latest"
+      ],
+      "returnValueTest": {
+        "comparator": ">=",
+        "value": "10000000000000"
+      }
+    }
+  ],
+  "hasCoinage": [
+    {
+      "contractAddress": "0x4776DEFcF622c60C6419CCcc9eE9E9042fadf3F7",
+      "standardContractType": "ERC1155",
+      "chain": "ethereum",
+      "method": "balanceOfBatch",
+      "parameters": [
+        ":userAddress,:userAddress,:userAddress",
+        "1,2,3"
+      ],
+      "returnValueTest": {
+        "comparator": ">",
+        "value": "0"
+      }
+    }
+  ],
+  "statement": "Sign to verify you are a Coinage NFT Holder.",
+  "leaders": [
+    {"address": "0x863478", "score": 12, "stake": 0.1, "timestamp": 510003 },
+    {"address": "0x02a6ff", "score": 5, "stake": 0.01, "timestamp": 5100548 },
+    {"address": "0xce9391", "score": 5, "stake": 0.01, "timestamp": 5100725 },
+    {"address": "0xce9391", "score": 5, "stake": 0.01, "timestamp": 5100724 },
+    {"address": "0x8bb5ca", "score": 19, "stake": 0.011, "timestamp": 5100 },
+    {"address": "0x055c36", "score": 22, "stake": 0.01, "timestamp": 5100975 },
+    {"address": "0xd54cf0", "score": 22, "stake": 0.012, "timestamp": 5101113 },
+    {"address": "0xf46b3e", "score": 26, "stake": 0.01, "timestamp": 510124},
+    {"address": "0x73ca2d", "score": 25, "stake": 0.01, "timestamp": 5101368 },
+    {"address": "0xb11183", "score": 19, "stake": 0.013, "timestamp": 510000 },
+    {"address": "0x69f626", "score": 11, "stake": 0.016, "timestamp": 510162 }
+  ]
+}

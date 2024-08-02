@@ -1,0 +1,32 @@
+{
+    "abi": [
+        {
+            "inputs": [],
+            "name": "buySingle",
+            "outputs": [
+                {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+                }
+            ],
+            "stateMutability": "payable",
+            "type": "function",
+            "payable": true
+        },
+        {
+            "inputs": [],
+            "name": "buyFive",
+            "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+            ],
+            "stateMutability": "payable",
+            "type": "function",
+            "payable": true
+        }
+    ]
+}

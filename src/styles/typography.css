@@ -1,0 +1,211 @@
+@font-face {
+  font-family: "GT America Trial";
+  src: url("/fonts/GT-America-Standard-Regular.otf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "GT America Trial";
+  src: url("/fonts/GT-America-Standard-Bold.otf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "GT America Trial";
+  src: url("/fonts/GT-America-Condensed-Black.otf");
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: "GT America Trial";
+  src: url("/fonts/GT-America-Condensed-Black-Italic.otf");
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "GT America Mono";
+  src: url("/fonts/GT-America-Mono-Bold.otf");
+  font-weight: 700;
+}
+
+/* update this font path when it is supplied */
+@font-face {
+  font-family: "GT America Mono";
+  src: url("/fonts/GT-America-Mono-Regular.otf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "GT America Mono";
+  src: url("/fonts/GT-America-Mono-Bold-Italic.otf");
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* Utilities */
+.display-root {
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+}
+
+.subhead-root {
+  font-family: "GT America Trial";
+  font-weight: 700;
+}
+
+.body-root {
+  font-family: "GT America Trial";
+  font-weight: 400;
+}
+
+.mono-root {
+  font-family: "GT America Mono";
+  font-weight: 400;
+}
+
+/* Mobile Sizes */
+.display1 {
+  @apply display-root;
+  font-size: 3rem;
+  line-height: 3.5rem;
+}
+
+.display2 {
+  @apply display-root;
+  font-size: 2rem;
+  line-height: 2.5rem;
+}
+
+.display3 {
+  @apply display-root;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.row-title-text,
+.subhead1 {
+  @apply subhead-root;
+  font-size: 1.2rem;
+  line-height: 1.75rem;
+}
+
+.subhead2 {
+  @apply subhead-root;
+  font-size: 1rem;
+  line-height: 1.375rem;
+}
+
+.subhead3 {
+  @apply subhead-root;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.row-content-text,
+.body1 {
+  @apply body-root;
+  font-size: 1rem;
+  line-height: 1.375rem;
+}
+
+.body2 {
+  @apply body-root;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.caption {
+  @apply body-root;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+}
+
+.w-full.arrow-button {
+  width: 100%;
+}
+
+.btn {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: "GT America Mono";
+  font-weight: 700;
+  font-style: italic;
+  /* width: 100%; */
+}
+
+.mono1 {
+  @apply mono-root;
+  font-size: 1rem;
+  line-height: 1.375rem;
+}
+
+.mono2 {
+  @apply mono-root;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.blockquote > p {
+  @apply subhead3;
+}
+
+/* Desktop sizes */
+@media (min-width: 820px) {
+  .display1 {
+    font-size: 5.5rem;
+    line-height: 6rem;
+  }
+  .display2 {
+    font-size: 4rem;
+    line-height: 5rem;
+  }
+
+  .display3 {
+    font-size: 3rem;
+    line-height: 4rem;
+  }
+
+  .subhead1 {
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+
+  .subhead2 {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+  }
+
+  .subhead3 {
+    font-size: 1rem;
+    line-height: 1.375rem;
+  }
+
+  .body1 {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+  }
+
+  .body2 {
+    font-size: 1rem;
+    line-height: 1.375rem;
+  }
+
+  .mono1 {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+  }
+
+  .mono2 {
+    font-size: 1rem;
+    line-height: 1.375rem;
+  }
+  .blockquote > p {
+    @apply subhead-root;
+    font-size: 1rem !important;
+    line-height: 1.375rem !important;
+  }
+}
