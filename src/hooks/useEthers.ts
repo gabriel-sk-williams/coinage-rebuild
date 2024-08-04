@@ -2,7 +2,7 @@ import * as React from "react";
 //import { type WalletClient, useWalletClient } from 'wagmi';
 //import { providers } from "ethers";
 
-// TODO: is custom signer still broken?
+// TODO: is custom signer still broken? wagmi
 
 /*
 export function walletClientToSigner(walletClient: WalletClient) {

@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import '../styles/typography.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import type { AppProps } from 'next/app';
-import {RainbowTheme} from '../styles/rainbowTheme';
+import { RainbowTheme } from '../styles/rainbowTheme';
 import dynamic from 'next/dynamic';
 /*
 import { configureChains, WagmiConfig, createConfig} from 'wagmi'; //mainnet, 
@@ -20,7 +20,7 @@ import { config } from '../wagmi';
 const client = new QueryClient();
 
 function App({ Component, pageProps }: AppProps) {
-  const Page = dynamic(() => import('../components/Page'), {ssr: false});
+  // const Page = dynamic(() => import('../components/Page'), {ssr: false});
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>

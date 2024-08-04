@@ -54,7 +54,7 @@ const Home: NextPage = () => {
   const [authorized, setAuthorized] = useState<boolean>(false);
   const [outOfAttempts, setOutOfAttempts] = useState<boolean>(false);
 
-  const [gameOver, setGameOver] = useState<boolean>(true);
+  const [gameOver, setGameOver] = useState<boolean>(false); // set game on/off
   const [showMain, setShowMain] = useState<boolean>(true);
   const [loadingQuiz, setLoadingQuiz] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);

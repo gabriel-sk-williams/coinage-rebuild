@@ -3,9 +3,11 @@ import { PropsWithChildren, useEffect } from "react";
 import { Button } from "../Actions";
 import { useChainModal } from "@rainbow-me/rainbowkit";
 
+// TODO: wagmi imports broken
+
 const ChangeChainButton: React.FC = () => {
   const { openChainModal } = useChainModal();
-  //const { switchNetwork } = useSwitchNetwork();
+  // const { switchNetwork } = useSwitchNetwork();
   // const { chain } = useNetwork();
 
  /*
