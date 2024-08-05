@@ -36,6 +36,10 @@ const nextConfig = {
     POSTGRES_USER: process.env.POSTGRES_USER,
   },
   reactStrictMode: true,
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+    return config;
+  },
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>

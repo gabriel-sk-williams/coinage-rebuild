@@ -39,3 +39,4 @@ yarn-error.log*
 
 src/abi/test.json
 src/pages/encryptor.tsx
+src/pages/local.tsx

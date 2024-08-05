@@ -8,24 +8,33 @@ import {CountdownCircleTimer} from 'react-countdown-circle-timer';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { Link } from '../components/Actions';
-import {Button, ConnectButton} from '../components/Actions';
-import {RecordTable} from '../components/RecordTable';
+import { Button, ConnectButton } from '../components/Actions';
+import { RecordTable } from '../components/RecordTable';
 import PageLoader from '../components/LoadingIndicators/PageLoader';
 import { Footer } from '../components/Footer';
 
 //import * as LitNodeClient from '@lit-protocol/lit-node-client-nodejs';
 //import * as LitJsSdk from '@lit-protocol/lit-node-client';
-//import {ethConnect, disconnectWeb3} from '@lit-protocol/lit-node-client';
-//import {checkAndSignAuthMessage} from '@lit-protocol/auth-browser';
+import { ethConnect, disconnectWeb3 } from '@lit-protocol/lit-node-client';
+import { Provider } from 'ethers';
+//import { checkAndSignAuthMessage } from '@lit-protocol/auth-browser';
+
 import game from '../abi/game.json';
-import keys from '../abi/coinage_keys.json';
-import pairs from '../abi/coinage_pairs.json';
+import * as CryptoJS from 'crypto-js'; // temp?
+
+// noq 1009
+//import keys from '../abi/coinage_keys.json';
+//import pairs from '../abi/coinage_pairs.json';
+
+// noq 99
+import keys from '../abi/practice_keys.json';
+import pairs from '../abi/local_pairs.json';
 
 import {useVercelRequest} from '../hooks/useVercel';
 import {useKVRequest} from '../hooks/useKV';
 // import { walletClientToSigner, useEthersSigner} from '../hooks/useEthers';
 import {useAccount} from 'wagmi';
-// import {providers} from 'ethers';
+
 import {EmailSignup} from '../components/EmailSignup';
 
 import { createWalletClient, parseEther } from 'viem';
@@ -88,50 +97,34 @@ const Home: NextPage = () => {
   const {loading, entries, postScore} = useVercelRequest();
   const {attempts, getAttempts, increment, decrement } = useKVRequest(address || 'unknown');
 
-  async function buyAttempt() {
-    console.log("buying attempt");
-    if (walletClient) {
-      const hash = await walletClient.sendTransaction({
-        chain: sepolia,
-        account: walletClient.account,
-        to: '0x4a4EB24f05E272d1B6507d1e528Fac4C942614F2',
-        value: parseEther('0.001')
-      })
-
-      if (hash && address) {
-        console.log(walletClient.account);
-        console.log("returning: ", hash);
-        decrement(address.toString());
-      } else {
-        console.log("failed");
-      }
-    }
-  }
-
-  async function generateAuthSig() {
-    console.log("generating auth sig")
-  }
-
-  /*
   async function generateAuthSig(
-    provider: providers.Web3Provider | undefined,
+    // provider: providers.Web3Provider | undefined,
     address: `0x${string}` | undefined) {
 
     authSignature.current = undefined;
     setError(null);
-    await client.connect();
+    // await client.connect();
 
     const expiration = new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString();
 
     try {
-      if (provider && address) {
+      // if (provider && address) {
+      if (address) {
+        /*
         const newAuthSig = await ethConnect.signAndSaveAuthMessage({
-          web3: provider,
+          web3: Provider.,
           account: address.toLowerCase(),
           chainId: game.chainId,
           expiration,
           resources: [],
         });
+        */
+        const newAuthSig: JsonAuthSig = {
+          sig: "sig",
+          derivedVia: "via",
+          signedMessage: "hello",
+          address: address.toLowerCase(),
+        }
 
         authSignature.current = newAuthSig;
         verify(newAuthSig);
@@ -141,9 +134,9 @@ const Home: NextPage = () => {
       setError(`Failed to sign auth message: ${err.message}`);
     }
   }
-  */
 
   const verify = async (authSig: JsonAuthSig | undefined) => {
+    /*
     console.log(authSig);
     const [q] = pairs.trivia[0];
     const [kq] = keys.trivia[0];
@@ -156,6 +149,10 @@ const Home: NextPage = () => {
       setFlagged(false);
       setAuthorized(true);
     }
+      */
+    
+    setFlagged(false);
+    setAuthorized(true);
   };
 
   const startQuiz = async () => {
@@ -234,7 +231,10 @@ const Home: NextPage = () => {
       const decryptedString = await LitJsSdk.decryptString(esBlob, symmetricKey);
       return decryptedString;
       */
-     return "decrypted string"
+  
+      const decryptedString = CryptoJS.AES.decrypt(eString, 'gigas').toString(CryptoJS.enc.Utf8);
+
+     return decryptedString
     } catch (error) {
       console.log('Decryption error:', error);
       return false;
@@ -664,8 +664,8 @@ const Home: NextPage = () => {
 
               ) : isConnected && !authorized ? (
                 <div className="pt-4">
-                  {/*<Button modifier="primary" onClick={() => generateAuthSig(provider, address)}> */}
-                  <Button modifier="primary" onClick={() => generateAuthSig()}>
+                  <Button modifier="primary" onClick={() => generateAuthSig(address)}>
+                  {/*<Button modifier="primary" onClick={() => generateAuthSig()}>*/}
                     AUTHENTICATE
                   </Button>
                 </div>
@@ -831,6 +831,27 @@ const Home: NextPage = () => {
 export default Home;
 
 {/*
+
+async function buyAttempt() {
+  console.log("buying attempt");
+  if (walletClient) {
+    const hash = await walletClient.sendTransaction({
+      chain: sepolia,
+      account: walletClient.account,
+      to: '0x4a4EB24f05E272d1B6507d1e528Fac4C942614F2',
+      value: parseEther('0.001')
+    })
+
+    if (hash && address) {
+      console.log(walletClient.account);
+      console.log("returning: ", hash);
+      decrement(address.toString());
+    } else {
+      console.log("failed");
+    }
+  }
+}
+
 <div className="flex flex-col items-center text-center justify-between mt-4">
   <Button modifier="primary" onClick={() => buyAttempt()}>
     BUY ATTEMPT
