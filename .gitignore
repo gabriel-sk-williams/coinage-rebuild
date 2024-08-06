@@ -39,4 +39,6 @@ yarn-error.log*
 
 src/abi/test.json
 src/pages/encryptor.tsx
+src/pages/decryptor.tsx
 src/pages/local.tsx
+src/pages/reset.tsx

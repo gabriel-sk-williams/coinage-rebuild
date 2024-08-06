@@ -187,6 +187,8 @@ const Home: NextPage = () => {
 
     // will happen on checkAnswer (asynchronously)
     const da = await decryptString(a, ka);
+
+    console.log("answer", da)
     if (da) answer.current = da.trim().toLowerCase();
   };
 
@@ -212,6 +214,9 @@ const Home: NextPage = () => {
 
   const checkAnswer = () => {
     const level = userAnswer.trim().toLowerCase();
+
+    console.log("ca", userAnswer, answer.current) 
+
     return level.length ? level === answer.current : false;
   };
 
@@ -233,8 +238,12 @@ const Home: NextPage = () => {
       */
   
       const decryptedString = CryptoJS.AES.decrypt(eString, 'gigas').toString(CryptoJS.enc.Utf8);
+      const obj = JSON.parse(decryptedString)
 
-     return decryptedString
+      if (obj.question) return obj.question
+      if (obj.answer) return obj.answer
+      //return obj.question
+
     } catch (error) {
       console.log('Decryption error:', error);
       return false;
@@ -333,6 +342,7 @@ const Home: NextPage = () => {
     setUserEntry(JSON.stringify(currentEntry));
 
     if (address && showResults && !scorePosted) {
+      console.log(currentEntry)
       postScore(currentEntry);
       setScorePosted(true);
     }
@@ -416,7 +426,7 @@ const Home: NextPage = () => {
         <div>
           <div className="flex-col items-center">
           <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
-          {'Thanks for playing Coinage Trivia Game 2!'}
+          {`Thanks for playing Coinage Trivia ${game.name}!`}
           </p>
           <p className="subhead3 text-coinage-gray py-2 mb-6">
             {`The winner was wallet {0xaF7dda...} with a score of 20.`} <br/>
@@ -762,7 +772,7 @@ const Home: NextPage = () => {
             <Image src="/Leaderboard_Image.png" alt="Coinage Media Trivia" width={500} height={100} />
             <div className="py-6">
               <p className="subhead3 text-center text-coinage-orange mb-2 mt-1">
-                {'Game 2 Final Results'}
+                {`${game.name} Final Results`}
               </p>
 
               <table className="table-fixed">

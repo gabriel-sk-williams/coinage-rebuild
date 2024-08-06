@@ -7,6 +7,7 @@ export default async function handler(
 ) {
   const client = await db.connect();
 
+  /*
   try {
     await client.sql`
     CREATE TABLE Leaderboard ( 
@@ -16,12 +17,15 @@ export default async function handler(
         );
     `;
   } catch (error) {
-    // return response.status(500).json({ error });
+    console.log("Leaderboard table already created")
+    return response.status(500).json({ error });
   }
+  */
 
   switch (request.method) {
 
     case "GET":
+      try {
       const list = await client.sql`
         SELECT * FROM (
           SELECT DISTINCT ON (Address) Address, Score, Timestamp
@@ -33,16 +37,23 @@ export default async function handler(
         ORDER BY Score DESC, Timestamp ASC
       `;
       return response.status(200).json({ leaderboard: list });
-      break;
+    } catch (error) {
+      console.log("error getting", error)
+      return response.status(500).json({ error });
+    }
 
     case "POST":
-      await client.sql`INSERT INTO Leaderboard (Address, Score, Timestamp) VALUES (
-        ${request.body.address}, 
-        ${request.body.score},
-        ${request.body.timestamp}
-      );`;
-
-      return response.status(200).json({ ok: true });
-      break;
+      console.log("posting")
+      try {
+        await client.sql`INSERT INTO Leaderboard (Address, Score, Timestamp) VALUES (
+          ${request.body.address}, 
+          ${request.body.score},
+          ${request.body.timestamp}
+        );`;
+        return response.status(200).json({ ok: true });
+      } catch (error) {
+        console.log("error posting", error)
+      return response.status(500).json({ error });
+      }
   }
 }

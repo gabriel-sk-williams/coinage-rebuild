@@ -1,7 +1,8 @@
 {  
+  "name": "Practice Game",
   "chain": "ethereum",
   "chainId": 1,
-  "duration": 30,
+  "duration": 15,
   "noq": 99,
   "contractAddress": "68C64B65f5960E28BeD8eaf364D37c2e440f8fa0",
   "initialQuestion": "Welcome to Coinage Trivia",

@@ -51,6 +51,7 @@ export function useVercelRequest() {
     }
 
     async function postScore(payload: Score) {
+        console.log("posting Score")
         try {
             setStatus(null);
             setLoading(true);
