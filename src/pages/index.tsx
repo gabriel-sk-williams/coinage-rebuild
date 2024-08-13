@@ -20,8 +20,6 @@ import {
   generateAuthSig,
 } from "@lit-protocol/auth-helpers";
 import { LitNetwork, LIT_RPC } from "@lit-protocol/constants";
-// import * as LitNodeClient from '@lit-protocol/lit-node-client-nodejs';
-//import * as LitNodeClientNodeJs from '@lit-protocol/lit-node-client-nodejs';
 import * as LitJsSdk from '@lit-protocol/lit-node-client';
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { disconnectWeb3 } from '@lit-protocol/lit-node-client';
@@ -158,6 +156,37 @@ const hasTrialPass = [
   }
 ]
 
+const hasCoinageSuite = [
+  {
+      contractAddress: "0x4776DEFcF622c60C6419CCcc9eE9E9042fadf3F7",
+      standardContractType: "ERC1155" as const,
+      chain: "ethereum" as const,
+      method: "balanceOfBatch",
+      parameters: [
+        ":userAddress,:userAddress,:userAddress",
+        "1,2,3"
+      ],
+      returnValueTest: {
+        "comparator": ">" as const,
+        "value": "0" as const,
+      },
+  },
+  { operator: "or" },
+  {
+      contractAddress: '0xe8B5C935764742cda69eb71b7F01Cf1c4e70b567',
+      standardContractType: 'ERC721' as const,
+      chain: 'base' as const,
+      method: 'balanceOf',
+      parameters: [
+          ":userAddress"
+      ],
+      returnValueTest: {
+          comparator: '>' as const,
+          value: '0' as const
+      }
+  }
+];
+
   const getEnv = (name: string): string => {
     const env = process.env.NEXT_PUBLIC_PRIVATE_KEY
     if (env === undefined || env === "")
@@ -241,7 +270,7 @@ const hasTrialPass = [
         const [kq] = cKeys.trivia[0];
 
         const result = await LitJsSdk.decryptToString({
-          accessControlConditions: hasCoinageBatch,
+          accessControlConditions: hasCoinageSuite,
           chain: game.chain,
           ciphertext: q,
           dataToEncryptHash: kq,
