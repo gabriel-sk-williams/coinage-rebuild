@@ -40,7 +40,6 @@ export function useVercelRequest() {
             setStatus(null);
             setLoading(true);
             const response = await axios.get("api/lit");
-            //console.log(response.data.encryptedWallet);
             return response.data.encryptedWallet
         } catch (error: any) {
             setLoading(false);
