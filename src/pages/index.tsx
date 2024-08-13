@@ -21,13 +21,11 @@ import {
 } from "@lit-protocol/auth-helpers";
 import { LitNetwork, LIT_RPC } from "@lit-protocol/constants";
 // import * as LitNodeClient from '@lit-protocol/lit-node-client-nodejs';
-import * as LitNodeClientNodeJs from '@lit-protocol/lit-node-client-nodejs';
+//import * as LitNodeClientNodeJs from '@lit-protocol/lit-node-client-nodejs';
 import * as LitJsSdk from '@lit-protocol/lit-node-client';
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
-import { ethConnect, disconnectWeb3 } from '@lit-protocol/lit-node-client';
-import { Provider } from 'ethers';
+import { disconnectWeb3 } from '@lit-protocol/lit-node-client';
 import * as ethers from "ethers";
-import { checkAndSignAuthMessage } from '@lit-protocol/auth-browser';
 
 import game from '../abi/game.json';
 import * as CryptoJS from 'crypto-js'; // temp?
@@ -48,37 +46,13 @@ import {useKVRequest} from '../hooks/useKV';
 // import { walletClientToSigner, useEthersSigner} from '../hooks/useEthers';
 
 import {useAccount} from 'wagmi';
-
 import {EmailSignup} from '../components/EmailSignup';
 
-import { createWalletClient, parseEther } from 'viem';
-import { mainnet, goerli, sepolia } from 'viem/chains';
+//import { createWalletClient, parseEther } from 'viem';
+//import { mainnet, goerli, sepolia } from 'viem/chains';
 import { useWalletClient } from 'wagmi';
 import { clientToSigner, useEthersSigner} from '../hooks/useEthers';
 
-/*
-//IM: NODEJS client? Will this work in browser?
-const client = new LitNodeClient.LitNodeClientNodeJs({
-  litNetwork: 'serrano',
-  defaultAuthCallback: checkAndSignAuthMessage,
-});
-*/
-
-/*
-const client = new LitNodeClientNodeJs.LitNodeClientNodeJs({
-  litNetwork: "datil-test", // datil-dev
-  defaultAuthCallback: checkAndSignAuthMessage,
-});
-*/
-
-/*
-type JsonAuthSig = {
-  sig: string;
-  derivedVia: string;
-  signedMessage: string;
-  address: string;
-};
-*/
 const Home: NextPage = () => {
 
   const [error, setError] = useState<string | null>(null);
@@ -1075,4 +1049,30 @@ async function buyAttempt() {
     BUY ATTEMPT
   </Button>
 </div>
-*/}
+*/
+
+/*
+//IM: NODEJS client? Will this work in browser?
+const client = new LitNodeClient.LitNodeClientNodeJs({
+  litNetwork: 'serrano',
+  defaultAuthCallback: checkAndSignAuthMessage,
+});
+*/
+
+/*
+const client = new LitNodeClientNodeJs.LitNodeClientNodeJs({
+  litNetwork: "datil-test", // datil-dev
+  defaultAuthCallback: checkAndSignAuthMessage,
+});
+*/
+
+/*
+type JsonAuthSig = {
+  sig: string;
+  derivedVia: string;
+  signedMessage: string;
+  address: string;
+};
+*/
+
+}
