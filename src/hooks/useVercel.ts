@@ -19,7 +19,6 @@ export function useVercelRequest() {
     const [loading, setLoading] = useState<boolean>(true);
     const [status, setStatus] = useState<string | null>(null);
     const [entries, setEntries] = useState<Score[] | null>();
-    const [wallet, setWallet] = useState<string | null>();
 
     async function getAll() {
         try {
@@ -41,8 +40,7 @@ export function useVercelRequest() {
             setStatus(null);
             setLoading(true);
             const response = await axios.get("api/lit");
-            console.log(response.data.encryptedWallet);
-            setWallet(response.data.encryptedWallet);
+            //console.log(response.data.encryptedWallet);
             return response.data.encryptedWallet
         } catch (error: any) {
             setLoading(false);

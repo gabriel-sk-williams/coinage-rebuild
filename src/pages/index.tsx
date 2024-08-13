@@ -90,7 +90,7 @@ const Home: NextPage = () => {
   const signer = walletClient ? clientToSigner(walletClient) : undefined; // custom
   // const provider = walletClient ? walletClientToSigner(walletClient) : undefined; // custom
 
-  const {loading, entries, wallet, postScore, getWallet } = useVercelRequest();
+  const {loading, entries, postScore, getWallet } = useVercelRequest();
   const {attempts, getAttempts, increment, decrement } = useKVRequest(address || 'unknown');
 
   const hasEth = [
