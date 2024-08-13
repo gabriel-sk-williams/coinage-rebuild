@@ -2,24 +2,21 @@
   "name": "Practice Game",
   "chain": "ethereum",
   "chainId": 1,
-  "duration": 120,
+  "duration": 15,
   "noq": 99,
   "contractAddress": "68C64B65f5960E28BeD8eaf364D37c2e440f8fa0",
   "initialQuestion": "Welcome to Coinage Trivia",
   "initialAnswer": "",
   "hasEth": [
-    { 
+    {
       "contractAddress": "",
       "standardContractType": "",
       "chain": "ethereum",
       "method": "eth_getBalance",
-      "parameters": [
-        ":userAddress",
-        "latest"
-      ],
+      "parameters": [":userAddress", "latest"],
       "returnValueTest": {
         "comparator": ">=",
-        "value": "10000000000000"
+        "value": "1000000000000"
       }
     }
   ],
@@ -32,6 +29,22 @@
       "parameters": [
         ":userAddress,:userAddress,:userAddress",
         "1,2,3"
+      ],
+      "returnValueTest": {
+        "comparator": ">",
+        "value": "0"
+      }
+    }
+  ],
+  "hasTrialPass": [
+    {
+      "contractAddress": "0xe8B5C935764742cda69eb71b7F01Cf1c4e70b567",
+      "standardContractType": "ERC1822",
+      "chain": "base",
+      "method": "balanceOf",
+      "parameters": [
+        ":userAddress",
+        "1"
       ],
       "returnValueTest": {
         "comparator": ">",

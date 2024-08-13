@@ -13,26 +13,40 @@ import { RecordTable } from '../components/RecordTable';
 import PageLoader from '../components/LoadingIndicators/PageLoader';
 import { Footer } from '../components/Footer';
 
-//import * as LitNodeClient from '@lit-protocol/lit-node-client-nodejs';
-//import * as LitJsSdk from '@lit-protocol/lit-node-client';
+import {
+  LitAbility,
+  LitAccessControlConditionResource,
+  createSiweMessage,
+  generateAuthSig,
+} from "@lit-protocol/auth-helpers";
+import { LitNetwork, LIT_RPC } from "@lit-protocol/constants";
+// import * as LitNodeClient from '@lit-protocol/lit-node-client-nodejs';
+import * as LitNodeClientNodeJs from '@lit-protocol/lit-node-client-nodejs';
+import * as LitJsSdk from '@lit-protocol/lit-node-client';
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { ethConnect, disconnectWeb3 } from '@lit-protocol/lit-node-client';
 import { Provider } from 'ethers';
-//import { checkAndSignAuthMessage } from '@lit-protocol/auth-browser';
+import * as ethers from "ethers";
+import { checkAndSignAuthMessage } from '@lit-protocol/auth-browser';
 
 import game from '../abi/game.json';
 import * as CryptoJS from 'crypto-js'; // temp?
 
 // noq 1009
-//import keys from '../abi/coinage_keys.json';
-//import pairs from '../abi/coinage_pairs.json';
+// import keys from '../abi/coinage_keys.json';
+// import pairs from '../abi/coinage_pairs.json';
 
 // noq 99
 import keys from '../abi/practice_keys.json';
 import pairs from '../abi/local_pairs.json';
 
+import cKeys from '../abi/coinage_keys.json';
+import cPairs from '../abi/coinage_pairs.json';
+
 import {useVercelRequest} from '../hooks/useVercel';
 import {useKVRequest} from '../hooks/useKV';
 // import { walletClientToSigner, useEthersSigner} from '../hooks/useEthers';
+
 import {useAccount} from 'wagmi';
 
 import {EmailSignup} from '../components/EmailSignup';
@@ -40,6 +54,7 @@ import {EmailSignup} from '../components/EmailSignup';
 import { createWalletClient, parseEther } from 'viem';
 import { mainnet, goerli, sepolia } from 'viem/chains';
 import { useWalletClient } from 'wagmi';
+import { clientToSigner, useEthersSigner} from '../hooks/useEthers';
 
 /*
 //IM: NODEJS client? Will this work in browser?
@@ -49,13 +64,21 @@ const client = new LitNodeClient.LitNodeClientNodeJs({
 });
 */
 
+/*
+const client = new LitNodeClientNodeJs.LitNodeClientNodeJs({
+  litNetwork: "datil-test", // datil-dev
+  defaultAuthCallback: checkAndSignAuthMessage,
+});
+*/
+
+/*
 type JsonAuthSig = {
   sig: string;
   derivedVia: string;
   signedMessage: string;
   address: string;
 };
-
+*/
 const Home: NextPage = () => {
 
   const [error, setError] = useState<string | null>(null);
@@ -86,74 +109,189 @@ const Home: NextPage = () => {
   const [userEntry, setUserEntry] = useState<string>('');
 
   const answer = useRef<string>(''); // holds encrypted correct answer
-  const authSignature = useRef<JsonAuthSig | undefined>(undefined);
+  // const authSignature = useRef<JsonAuthSig | undefined>(undefined);
   const log = useRef<Array<number>>([]); // holds generated indeces
 
   // HOOKS
   const {address, isConnected, isDisconnected} = useAccount(); // Rainbow Wallet
   const { data: walletClient } = useWalletClient({ chainId: game.chainId }) // wagmi
+  const signer = walletClient ? clientToSigner(walletClient) : undefined; // custom
   // const provider = walletClient ? walletClientToSigner(walletClient) : undefined; // custom
 
   const {loading, entries, postScore} = useVercelRequest();
   const {attempts, getAttempts, increment, decrement } = useKVRequest(address || 'unknown');
 
-  async function generateAuthSig(
-    // provider: providers.Web3Provider | undefined,
-    address: `0x${string}` | undefined) {
+  const hasEth = [
+    {
+      contractAddress: "",
+      standardContractType: "" as const,
+      chain: 'ethereum' as const,
+      method: "eth_getBalance",
+      parameters: [":userAddress", "latest"],
+      returnValueTest: {
+        comparator: ">=" as const,
+        value: "1000000000000" as const, // 0.000001 ETH
+      },
+    },
+  ];
 
-    authSignature.current = undefined;
+  const hasCoinageBatch = [
+    {
+      contractAddress: "0x4776DEFcF622c60C6419CCcc9eE9E9042fadf3F7",
+      standardContractType: "ERC1155" as const,
+      chain: "ethereum" as const,
+      method: "balanceOfBatch",
+      parameters: [
+        ":userAddress,:userAddress,:userAddress",
+        "1,2,3"
+      ],
+      returnValueTest: {
+        "comparator": ">" as const,
+        "value": "0" as const,
+      },
+    },
+  ];
+
+  const hasBushido = [
+    {
+      contractAddress: '0xd2AAd45015090F8d45ad78E456B58dd61Fb7cD79',
+      standardContractType: 'ERC721' as const,
+      chain: "ethereum" as const,
+      method: 'ownerOf',
+      parameters: [
+        '2619'
+      ],
+      returnValueTest: {
+        comparator: '=' as const,
+        value: ':userAddress' as const
+      }
+    }
+]
+
+const hasTrialPass = [
+  {
+      contractAddress: '0xe8B5C935764742cda69eb71b7F01Cf1c4e70b567',
+      standardContractType: 'ERC721' as const,
+      chain: 'base' as const,
+      method: 'balanceOf',
+      parameters: [
+          ":userAddress"
+      ],
+      returnValueTest: {
+          comparator: '>' as const,
+          value: '0' as const
+      }
+  }
+]
+
+  const getEnv = (name: string): string => {
+    const env = process.env.NEXT_PUBLIC_PRIVATE_KEY
+    if (env === undefined || env === "")
+      throw new Error(
+        `${name} ENV is not defined, please define it in the .env file`
+      );
+    return env;
+  };
+
+  async function authenticate(
+    address: `0x${string}` | undefined,
+    signer: ethers.ethers.JsonRpcSigner | undefined
+  ) {
+
+    //authSignature.current = undefined;
     setError(null);
-    // await client.connect();
 
-    const expiration = new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString();
+    if (address && signer) {
+      try {
+        const ETHEREUM_PRIVATE_KEY = getEnv("NEXT_PUBLIC_PRIVATE_KEY")
 
-    try {
-      // if (provider && address) {
-      if (address) {
-        /*
-        const newAuthSig = await ethConnect.signAndSaveAuthMessage({
-          web3: Provider.,
-          account: address.toLowerCase(),
-          chainId: game.chainId,
-          expiration,
-          resources: [],
+        const ethersWallet = new ethers.Wallet(
+          ETHEREUM_PRIVATE_KEY,
+          new ethers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE),
+        );
+
+        const litNodeClient = new LitNodeClient({
+          litNetwork: LitNetwork.DatilTest, // DatilDev
+          debug: false,
+          // checkNodeAttestation: true,
         });
-        */
-        const newAuthSig: JsonAuthSig = {
-          sig: "sig",
-          derivedVia: "via",
-          signedMessage: "hello",
-          address: address.toLowerCase(),
+
+        await litNodeClient.connect();
+        console.log("✅ Connected LitNodeClient to Lit network");
+        console.log("🔄 Getting Session Sigs via an Auth Sig...");
+
+        const { capacityDelegationAuthSig } =
+          await litNodeClient.createCapacityDelegationAuthSig({
+            uses: '1',
+            dAppOwnerWallet: ethersWallet,
+            capacityTokenId: "933",
+            delegateeAddresses: [address],
+          });
+
+        if ( capacityDelegationAuthSig ) console.log("authorized user", capacityDelegationAuthSig);
+        // const expiration = new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString();
+
+        const sessionSigs = await litNodeClient.getSessionSigs({
+          chain: "ethereum",
+          expiration: new Date(Date.now() + 1000 * 60 * 10 ).toISOString(), // 10 minutes
+          resourceAbilityRequests: [
+            {
+              resource: new LitAccessControlConditionResource("*"),
+              ability: LitAbility.AccessControlConditionDecryption,
+            },
+          ],
+          authNeededCallback: async ({
+            uri,
+            expiration,
+            resourceAbilityRequests,
+          }) => {
+            const toSign = await createSiweMessage({
+              uri,
+              expiration,
+              resources: resourceAbilityRequests,
+              statement: 'Please sign for access to the Coinage Trivia Challenge!',
+              walletAddress: await signer.getAddress(),
+              nonce: await litNodeClient.getLatestBlockhash(),
+              litNodeClient,
+            });
+    
+            return await generateAuthSig({
+              signer: signer, // ethersWallet,
+              toSign,
+            });
+          },
+          capacityDelegationAuthSig,
+        });
+
+        const [q] = cPairs.trivia[0];
+        const [kq] = cKeys.trivia[0];
+
+        const result = await LitJsSdk.decryptToString({
+          accessControlConditions: hasCoinageBatch,
+          chain: game.chain,
+          ciphertext: q,
+          dataToEncryptHash: kq,
+          sessionSigs,
+        }, litNodeClient);
+
+        if (!result) {
+          // flag and kick
+          setFlagged(true);
+          console.log('You do NOT have a Coinage NFT');
+        } else {
+          setFlagged(false);
+          setAuthorized(true);
         }
 
-        authSignature.current = newAuthSig;
-        verify(newAuthSig);
+        console.log("✅ Got Session Sigs via an Auth Sig");
+
+      } catch (error) {
+        console.error(error);
+      } finally {
+        disconnectWeb3();
       }
-    } catch (err: any) {
-      console.error(err);
-      setError(`Failed to sign auth message: ${err.message}`);
     }
   }
-
-  const verify = async (authSig: JsonAuthSig | undefined) => {
-    /*
-    console.log(authSig);
-    const [q] = pairs.trivia[0];
-    const [kq] = keys.trivia[0];
-    const result = await decryptString(q, kq);
-    if (!result) {
-      // flag and kick
-      setFlagged(true);
-      console.log('You do NOT have Coinage NFT');
-    } else {
-      setFlagged(false);
-      setAuthorized(true);
-    }
-      */
-    
-    setFlagged(false);
-    setAuthorized(true);
-  };
 
   const startQuiz = async () => {
     if (address && authorized) {
@@ -187,8 +325,6 @@ const Home: NextPage = () => {
 
     // will happen on checkAnswer (asynchronously)
     const da = await decryptString(a, ka);
-
-    console.log("answer", da)
     if (da) answer.current = da.trim().toLowerCase();
   };
 
@@ -214,29 +350,23 @@ const Home: NextPage = () => {
 
   const checkAnswer = () => {
     const level = userAnswer.trim().toLowerCase();
-
-    console.log("ca", userAnswer, answer.current) 
-
     return level.length ? level === answer.current : false;
   };
 
   const decryptString = async (eString: string, eKey: string) => {
     // TODO: lit protocol
     try {
+
       /*
-      const esBlob = LitNodeClient.base64StringToBlob(eString);
-
-      const symmetricKey = await client.getEncryptionKey({
-        accessControlConditions: game.hasCoinage,
-        toDecrypt: eKey,
+      const result = await LitJsSdk.decryptToString({
+        accessControlConditions: hasEth,
         chain: game.chain,
-        authSig: authSignature.current,
-      });
-
-      const decryptedString = await LitJsSdk.decryptString(esBlob, symmetricKey);
-      return decryptedString;
+        ciphertext: eString,
+        dataToEncryptHash: eKey,
+        sessionSigs,
+      }, client);
       */
-  
+
       const decryptedString = CryptoJS.AES.decrypt(eString, 'gigas').toString(CryptoJS.enc.Utf8);
       const obj = JSON.parse(decryptedString)
 
@@ -411,7 +541,7 @@ const Home: NextPage = () => {
     if (isDisconnected) {
       // disconnectWeb3(); // TODO: lit protocol
       setAuthorized(false);
-      authSignature.current = undefined;
+      // authSignature.current = undefined;
     }
   }, [isDisconnected]);
 
@@ -674,8 +804,7 @@ const Home: NextPage = () => {
 
               ) : isConnected && !authorized ? (
                 <div className="pt-4">
-                  <Button modifier="primary" onClick={() => generateAuthSig(address)}>
-                  {/*<Button modifier="primary" onClick={() => generateAuthSig()}>*/}
+                  <Button modifier="primary" onClick={() => authenticate(address, signer)}>
                     AUTHENTICATE
                   </Button>
                 </div>
@@ -772,7 +901,7 @@ const Home: NextPage = () => {
             <Image src="/Leaderboard_Image.png" alt="Coinage Media Trivia" width={500} height={100} />
             <div className="py-6">
               <p className="subhead3 text-center text-coinage-orange mb-2 mt-1">
-                {`${game.name} Final Results`}
+                Final Results : {`${game.name} Final Results`}
               </p>
 
               <table className="table-fixed">
@@ -840,7 +969,86 @@ const Home: NextPage = () => {
 
 export default Home;
 
-{/*
+{
+
+      /*
+    try {
+      // if (provider && address) {
+      if (address) {
+        
+        const newAuthSig: JsonAuthSig = {
+          sig: "sig",
+          derivedVia: "via",
+          signedMessage: "hello",
+          address: address.toLowerCase(),
+        }
+
+        authSignature.current = newAuthSig;
+        verify(newAuthSig);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(`Failed to sign auth message: ${err.message}`);
+    }
+    */
+
+    /* old auth sig
+    const newAuthSig = await ethConnect.signAndSaveAuthMessage({
+      web3: Provider.,
+      account: address.toLowerCase(),
+      chainId: game.chainId,
+      expiration,
+      resources: [],
+    });
+  */
+
+  /*
+  const verify = async (sessionSignatures: SessionSigsMap | undefined) => {
+    // const verify = async (authSig: JsonAuthSig | undefined) => {
+    // console.log(authSig);
+    const [q] = cPairs.trivia[0];
+    const [kq] = cKeys.trivia[0];
+    // const result = await decryptString(q, kq);
+
+    const decryptedString = await LitJsSdk.decryptToString({
+      accessControlConditions: hasEth,
+      chain: game.chain,
+      ciphertext: q,
+      dataToEncryptHash: kq,
+      sessionSigs,
+      //authSig: authSignature.current,
+    }, client);
+
+    if (!result) {
+      // flag and kick
+      setFlagged(true);
+      console.log('You do NOT have a Coinage NFT');
+    } else {
+      setFlagged(false);
+      setAuthorized(true);
+    }
+  };
+  */
+      /*
+      const toSign = await createSiweMessage({
+        uri: "trivia.coinage.media",
+        expiration,
+        resources: [], // see below
+        walletAddress: await ethersSigner.getAddress(),
+        //walletAddress: address.toLowerCase(),
+        nonce: await client.getLatestBlockhash(),
+        client,
+      });
+      */
+      /*
+      // signer: Wallet | Signer | SignerLike;
+      const authSig = await generateAuthSig({
+        signer: ethersSigner,
+        toSign,
+      });
+      */
+  
+  /*
 
 async function buyAttempt() {
   console.log("buying attempt");
