@@ -19,7 +19,7 @@ import {
   createSiweMessage,
   generateAuthSig,
 } from "@lit-protocol/auth-helpers";
-import { LitNetwork, LIT_RPC } from "@lit-protocol/constants";
+import { LitNetwork } from "@lit-protocol/constants";
 import * as LitJsSdk from '@lit-protocol/lit-node-client';
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { disconnectWeb3 } from '@lit-protocol/lit-node-client';
@@ -41,7 +41,6 @@ import cPairs from '../abi/coinage_pairs.json';
 
 import {useVercelRequest} from '../hooks/useVercel';
 import {useKVRequest} from '../hooks/useKV';
-// import { walletClientToSigner, useEthersSigner} from '../hooks/useEthers';
 
 import {useAccount} from 'wagmi';
 import {EmailSignup} from '../components/EmailSignup';
@@ -88,73 +87,11 @@ const Home: NextPage = () => {
   const {address, isConnected, isDisconnected} = useAccount(); // Rainbow Wallet
   const { data: walletClient } = useWalletClient({ chainId: game.chainId }) // wagmi
   const signer = walletClient ? clientToSigner(walletClient) : undefined; // custom
-  // const provider = walletClient ? walletClientToSigner(walletClient) : undefined; // custom
 
   const {loading, entries, postScore, getWallet } = useVercelRequest();
   const {attempts, getAttempts, increment, decrement } = useKVRequest(address || 'unknown');
 
-  const hasEth = [
-    {
-      contractAddress: "",
-      standardContractType: "" as const,
-      chain: 'ethereum' as const,
-      method: "eth_getBalance",
-      parameters: [":userAddress", "latest"],
-      returnValueTest: {
-        comparator: ">=" as const,
-        value: "1000000000000" as const, // 0.000001 ETH
-      },
-    },
-  ];
 
-  const hasCoinageBatch = [
-    {
-      contractAddress: "0x4776DEFcF622c60C6419CCcc9eE9E9042fadf3F7",
-      standardContractType: "ERC1155" as const,
-      chain: "ethereum" as const,
-      method: "balanceOfBatch",
-      parameters: [
-        ":userAddress,:userAddress,:userAddress",
-        "1,2,3"
-      ],
-      returnValueTest: {
-        "comparator": ">" as const,
-        "value": "0" as const,
-      },
-    },
-  ];
-
-  const hasBushido = [
-    {
-      contractAddress: '0xd2AAd45015090F8d45ad78E456B58dd61Fb7cD79',
-      standardContractType: 'ERC721' as const,
-      chain: "ethereum" as const,
-      method: 'ownerOf',
-      parameters: [
-        '2619'
-      ],
-      returnValueTest: {
-        comparator: '=' as const,
-        value: ':userAddress' as const
-      }
-    }
-]
-
-const hasTrialPass = [
-  {
-      contractAddress: '0xe8B5C935764742cda69eb71b7F01Cf1c4e70b567',
-      standardContractType: 'ERC721' as const,
-      chain: 'base' as const,
-      method: 'balanceOf',
-      parameters: [
-          ":userAddress"
-      ],
-      returnValueTest: {
-          comparator: '>' as const,
-          value: '0' as const
-      }
-  }
-]
 
 const hasCoinageSuite = [
   {
@@ -196,20 +133,11 @@ const hasCoinageSuite = [
     setError(null);
 
     const encryptedWallet = await getWallet();
-    console.log("ec", encryptedWallet)
 
     const ethersWallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, "nurbs")
 
     if (address && signer && ethersWallet) {
       try {
-        /*
-        const ETHEREUM_PRIVATE_KEY = getEnv("NEXT_PUBLIC_PRIVATE_KEY")
-
-        const ethersWallet = new ethers.Wallet(
-          ETHEREUM_PRIVATE_KEY,
-          new ethers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE),
-        );
-        */
 
         const litNodeClient = new LitNodeClient({
           litNetwork: LitNetwork.DatilTest, // DatilDev
@@ -225,7 +153,7 @@ const hasCoinageSuite = [
           await litNodeClient.createCapacityDelegationAuthSig({
             uses: '1',
             dAppOwnerWallet: ethersWallet,
-            capacityTokenId: "955",
+            capacityTokenId: "956", // TODO: update August 18
             delegateeAddresses: [address],
           });
 
