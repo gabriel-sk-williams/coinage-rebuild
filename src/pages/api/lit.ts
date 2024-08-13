@@ -11,7 +11,6 @@ export default async function handler(
     switch (request.method) {
         case "GET":
             try {
-
                 const ETHEREUM_PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
                 const ethersWallet = new ethers.Wallet(
