@@ -19,6 +19,7 @@ export function useVercelRequest() {
     const [loading, setLoading] = useState<boolean>(true);
     const [status, setStatus] = useState<string | null>(null);
     const [entries, setEntries] = useState<Score[] | null>();
+    const [wallet, setWallet] = useState<string | null>();
 
     async function getAll() {
         try {
@@ -27,6 +28,22 @@ export function useVercelRequest() {
             const response = await axios.get("api/entries");
             console.log(response.data.leaderboard.rows);
             setEntries(response.data.leaderboard.rows);
+        } catch (error: any) {
+            setLoading(false);
+            setStatus(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function getWallet() {
+        try {
+            setStatus(null);
+            setLoading(true);
+            const response = await axios.get("api/lit");
+            console.log(response.data.encryptedWallet);
+            setWallet(response.data.encryptedWallet);
+            return response.data.encryptedWallet
         } catch (error: any) {
             setLoading(false);
             setStatus(error);
@@ -93,5 +110,5 @@ export function useVercelRequest() {
         getTable();
     }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
-    return { loading, status, entries, getAll, getTable, postScore, deleteScores }
+    return { loading, status, entries, getAll, getWallet, getTable, postScore, deleteScores }
 }

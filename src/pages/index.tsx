@@ -90,7 +90,7 @@ const Home: NextPage = () => {
   const signer = walletClient ? clientToSigner(walletClient) : undefined; // custom
   // const provider = walletClient ? walletClientToSigner(walletClient) : undefined; // custom
 
-  const {loading, entries, postScore} = useVercelRequest();
+  const {loading, entries, wallet, postScore, getWallet } = useVercelRequest();
   const {attempts, getAttempts, increment, decrement } = useKVRequest(address || 'unknown');
 
   const hasEth = [
@@ -187,15 +187,6 @@ const hasCoinageSuite = [
   }
 ];
 
-  const getEnv = (name: string): string => {
-    const env = process.env.NEXT_PUBLIC_PRIVATE_KEY
-    if (env === undefined || env === "")
-      throw new Error(
-        `${name} ENV is not defined, please define it in the .env file`
-      );
-    return env;
-  };
-
   async function authenticate(
     address: `0x${string}` | undefined,
     signer: ethers.ethers.JsonRpcSigner | undefined
@@ -204,14 +195,21 @@ const hasCoinageSuite = [
     //authSignature.current = undefined;
     setError(null);
 
-    if (address && signer) {
+    const encryptedWallet = await getWallet();
+    console.log("ec", encryptedWallet)
+
+    const ethersWallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, "nurbs")
+
+    if (address && signer && ethersWallet) {
       try {
+        /*
         const ETHEREUM_PRIVATE_KEY = getEnv("NEXT_PUBLIC_PRIVATE_KEY")
 
         const ethersWallet = new ethers.Wallet(
           ETHEREUM_PRIVATE_KEY,
           new ethers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE),
         );
+        */
 
         const litNodeClient = new LitNodeClient({
           litNetwork: LitNetwork.DatilTest, // DatilDev
@@ -227,7 +225,7 @@ const hasCoinageSuite = [
           await litNodeClient.createCapacityDelegationAuthSig({
             uses: '1',
             dAppOwnerWallet: ethersWallet,
-            capacityTokenId: "933",
+            capacityTokenId: "955",
             delegateeAddresses: [address],
           });
 
@@ -259,7 +257,7 @@ const hasCoinageSuite = [
             });
     
             return await generateAuthSig({
-              signer: signer, // ethersWallet,
+              signer: signer,
               toSign,
             });
           },
@@ -904,7 +902,7 @@ const hasCoinageSuite = [
             <Image src="/Leaderboard_Image.png" alt="Coinage Media Trivia" width={500} height={100} />
             <div className="py-6">
               <p className="subhead3 text-center text-coinage-orange mb-2 mt-1">
-                Final Results : {`${game.name} Final Results`}
+                Practice Game Final Results
               </p>
 
               <table className="table-fixed">
