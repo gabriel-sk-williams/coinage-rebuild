@@ -8,21 +8,20 @@ export default async function handler(
 ) {
   
     switch (request.method) {
-        case "GET":
-            try {
-                const ETHEREUM_PRIVATE_KEY = process.env.PRIVATE_KEY || "";
+      case "GET":
+        try {
+          const ETHEREUM_PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
-                const ethersWallet = new ethers.Wallet(
-                  ETHEREUM_PRIVATE_KEY,
-                  new ethers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE),
-                );
+          const ethersWallet = new ethers.Wallet(
+            ETHEREUM_PRIVATE_KEY,
+            new ethers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE),
+          );
 
-                const walletJson = ethersWallet.encryptSync("nurbs")
+          const walletJson = ethersWallet.encryptSync("nurbs")
 
-                return response.status(200).json({ encryptedWallet: walletJson });
-            } catch(error) {
-                console.log(error)
-            }
-
+          return response.status(200).json({ encryptedWallet: walletJson });
+        } catch(error) {
+            console.log(error)
+        }
     }
 }

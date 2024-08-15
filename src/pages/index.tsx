@@ -136,6 +136,8 @@ const hasCoinageSuite = [
 
     const ethersWallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, "nurbs")
 
+    console.log("signer", signer)
+
     if (address && signer && ethersWallet) {
       try {
 
@@ -184,6 +186,8 @@ const hasCoinageSuite = [
               nonce: await litNodeClient.getLatestBlockhash(),
               litNodeClient,
             });
+
+            console.log(toSign)
     
             return await generateAuthSig({
               signer: signer,
