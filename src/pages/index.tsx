@@ -178,6 +178,7 @@ const hasCoinageSuite = [
               uri,
               expiration,
               resources: resourceAbilityRequests,
+              domain: "https://coinage-rebuild.vercel.app/",
               statement: 'Please sign for access to the Coinage Trivia Challenge!',
               walletAddress: await signer.getAddress(),
               nonce: await litNodeClient.getLatestBlockhash(),
