@@ -155,7 +155,7 @@ const hasCoinageSuite = [
           await litNodeClient.createCapacityDelegationAuthSig({
             uses: '1',
             dAppOwnerWallet: ethersWallet,
-            capacityTokenId: "956", // TODO: update August 18
+            capacityTokenId: "1041", // TODO: update Sunday August 25
             delegateeAddresses: [address],
           });
 
@@ -177,10 +177,12 @@ const hasCoinageSuite = [
             resourceAbilityRequests,
           }) => {
             const toSign = await createSiweMessage({
-              uri,
+              uri, //: lit:session:c5e8b9536e4fdc87fa5bed9768a21cf5169a1910e116c040a5a2fa7c39aa0bc0
               expiration,
               resources: resourceAbilityRequests,
-              // domain: "https://coinage-rebuild.vercel.app/",
+              // Vercel returns localhost
+              // manually adding fixes the domain problem but creates a mismatch
+              // domain: "https://coinage-rebuild.vercel.app/", 
               statement: 'Please sign for access to the Coinage Trivia Challenge!',
               walletAddress: await signer.getAddress(),
               nonce: await litNodeClient.getLatestBlockhash(),
@@ -188,6 +190,13 @@ const hasCoinageSuite = [
             });
 
             console.log(toSign)
+
+            const authsig = await generateAuthSig({
+              signer: signer,
+              toSign,
+            });
+
+            console.log("as", authsig)
     
             return await generateAuthSig({
               signer: signer,
@@ -196,6 +205,8 @@ const hasCoinageSuite = [
           },
           capacityDelegationAuthSig,
         });
+
+        console.log("session signatures obj", sessionSigs)
 
         const [q] = cPairs.trivia[0];
         const [kq] = cKeys.trivia[0];
