@@ -155,7 +155,7 @@ const hasCoinageSuite = [
           await litNodeClient.createCapacityDelegationAuthSig({
             uses: '1',
             dAppOwnerWallet: ethersWallet,
-            capacityTokenId: "24028", // TODO: update September 7
+            capacityTokenId: "25353", // TODO: update October 22
             delegateeAddresses: [address],
           });
 
