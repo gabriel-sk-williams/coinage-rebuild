@@ -55,6 +55,7 @@ const Home: NextPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [flagged, setFlagged] = useState<boolean>(false);
   const [authorized, setAuthorized] = useState<boolean>(false);
+  const [authenticating, setAuthenticating] = useState<boolean>(false);
   const [outOfAttempts, setOutOfAttempts] = useState<boolean>(false);
 
   const [gameOver, setGameOver] = useState<boolean>(false); // set game on/off
@@ -130,6 +131,7 @@ const hasCoinageSuite = [
   ) {
 
     //authSignature.current = undefined;
+    setAuthenticating(true)
     setError(null);
 
     const encryptedWallet = await getWallet();
@@ -182,7 +184,8 @@ const hasCoinageSuite = [
               resources: resourceAbilityRequests,
               // Vercel returns localhost
               // manually adding fixes the domain problem but creates a mismatch
-              // domain: "https://coinage-rebuild.vercel.app/", 
+              // domain: "https://coinage-rebuild.vercel.app/",
+              domain: "https://trivia.coinage.media/",
               statement: 'Please sign for access to the Coinage Trivia Challenge!',
               walletAddress: await signer.getAddress(),
               nonce: await litNodeClient.getLatestBlockhash(),
@@ -218,6 +221,8 @@ const hasCoinageSuite = [
           dataToEncryptHash: kq,
           sessionSigs,
         }, litNodeClient);
+
+        setAuthenticating(false)
 
         if (!result) {
           // flag and kick
@@ -301,16 +306,6 @@ const hasCoinageSuite = [
   const decryptString = async (eString: string, eKey: string) => {
     // TODO: lit protocol
     try {
-
-      /*
-      const result = await LitJsSdk.decryptToString({
-        accessControlConditions: hasEth,
-        chain: game.chain,
-        ciphertext: eString,
-        dataToEncryptHash: eKey,
-        sessionSigs,
-      }, client);
-      */
 
       const decryptedString = CryptoJS.AES.decrypt(eString, 'gigas').toString(CryptoJS.enc.Utf8);
       const obj = JSON.parse(decryptedString)
@@ -913,3 +908,14 @@ const hasCoinageSuite = [
 };
 
 export default Home;
+
+
+/*
+const result = await LitJsSdk.decryptToString({
+  accessControlConditions: hasEth,
+  chain: game.chain,
+  ciphertext: eString,
+  dataToEncryptHash: eKey,
+  sessionSigs,
+}, client);
+*/
