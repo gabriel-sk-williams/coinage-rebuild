@@ -188,7 +188,7 @@ const Home: NextPage = () => {
               // domain: "https://coinage-rebuild.vercel.app/",
               // domain: "https://trivia.coinage.media/",
               domain: process.env.DOMAIN, // localhost
-              statement: 'Please sign for access to the Coinage Trivia Challenge! ',
+              statement: 'Please sign for access to the Coinage Trivia Challenge!',
               walletAddress: await signer.getAddress(),
               nonce: await litNodeClient.getLatestBlockhash(),
               litNodeClient,
