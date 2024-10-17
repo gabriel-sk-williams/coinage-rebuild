@@ -179,6 +179,7 @@ const Home: NextPage = () => {
             resourceAbilityRequests,
           }) => {
 
+            console.log(process.env.DOMAIN)
             const toSign = await createSiweMessage({
               uri,
               expiration,
@@ -188,7 +189,7 @@ const Home: NextPage = () => {
               // domain: "https://coinage-rebuild.vercel.app/",
               // domain: "https://trivia.coinage.media/",
               domain: process.env.DOMAIN, // localhost
-              // statement: 'Please sign for access to the Coinage Trivia Challenge!',
+              statement: 'Please sign for access to the Coinage Trivia Challenge!',
               walletAddress: await signer.getAddress(),
               nonce: await litNodeClient.getLatestBlockhash(),
               litNodeClient,
@@ -227,6 +228,7 @@ const Home: NextPage = () => {
         }
 
         console.log("✅ Got Session Sigs via an Auth Sig");
+        return sessionSigs;
 
       } catch (error) {
         console.error(error);
