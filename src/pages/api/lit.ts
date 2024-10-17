@@ -17,8 +17,7 @@ export default async function handler(
             new ethers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE),
           );
 
-          const pass = process.env.WALLET as string
-          const walletJson = ethersWallet.encryptSync(pass)
+          const walletJson = ethersWallet.encryptSync('nurbs')
 
           return response.status(200).json({ encryptedWallet: walletJson });
         } catch(error) {

@@ -147,8 +147,7 @@ const Home: NextPage = () => {
     setError(null);
 
     const encryptedWallet = await getWallet();
-    const pass = process.env.WALLET as string
-    const ethersWallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, pass)
+    const ethersWallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, 'nurbs')
 
     if (address && signer && ethersWallet) {
       try {
@@ -310,14 +309,14 @@ const Home: NextPage = () => {
     try {
 
       // manual
-      const ex = process.env.SECRET as string
-      const decryptedString = CryptoJS.AES.decrypt(eString, ex).toString(CryptoJS.enc.Utf8);
-      const obj = JSON.parse(decryptedString)
+      //const ex = process.env.SECRET as string
+      //const decryptedString = CryptoJS.AES.decrypt(eString, ex).toString(CryptoJS.enc.Utf8);
+      //const obj = JSON.parse(decryptedString)
 
       // api
-      //const payload = {eString: eString, eKey: eKey}
-      //const response = await axios.post("api/decrypt", payload, {headers: jsonHeader});
-      //const obj = JSON.parse(response.data.decryptedString)
+      const payload = {eString: eString, eKey: eKey}
+      const response = await axios.post("api/decrypt", payload, {headers: jsonHeader});
+      const obj = JSON.parse(response.data.decryptedString)
 
       if (obj.question) return obj.question
       if (obj.answer) return obj.answer

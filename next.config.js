@@ -36,7 +36,6 @@ const nextConfig = {
     POSTGRES_USER: process.env.POSTGRES_USER,
     DOMAIN: process.env.DOMAIN,
     SECRET: process.env.SECRET,
-    WALLET: process.env.WALLET,
   },
   reactStrictMode: true,
   webpack: (config) => {
