@@ -52,12 +52,20 @@ import {EmailSignup} from '../components/EmailSignup';
 import { useWalletClient } from 'wagmi';
 import { clientToSigner, useEthersSigner} from '../hooks/useEthers';
 
+type AuthSig = {
+  sig: string;
+  derivedVia: string;
+  signedMessage: string;
+  address: string;
+};
+
 const Home: NextPage = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [flagged, setFlagged] = useState<boolean>(false);
   const [authorized, setAuthorized] = useState<boolean>(false);
   const [authenticating, setAuthenticating] = useState<boolean>(false);
+  const [litConnected, setLitConnected] = useState<boolean>(false);
   const [outOfAttempts, setOutOfAttempts] = useState<boolean>(false);
 
   const [gameOver, setGameOver] = useState<boolean>(false); // set game on/off
@@ -83,8 +91,8 @@ const Home: NextPage = () => {
   const [userEntry, setUserEntry] = useState<string>('');
 
   const answer = useRef<string>(''); // holds encrypted correct answer
-  // const authSignature = useRef<JsonAuthSig | undefined>(undefined);
   const log = useRef<Array<number>>([]); // holds generated indeces
+  // const authSignature = useRef<AuthSig | undefined>(undefined);
 
   // HOOKS
   const {address, isConnected, isDisconnected} = useAccount(); // Rainbow Wallet
@@ -125,34 +133,41 @@ const Home: NextPage = () => {
     }
   ];
 
+  const litNodeClient = new LitNodeClient({
+    litNetwork: LitNetwork.DatilTest, // DatilDev
+    debug: false,
+    // checkNodeAttestation: true,
+  });
+
   async function authenticate(
     address: `0x${string}` | undefined,
     signer: ethers.ethers.JsonRpcSigner | undefined
   ) {
 
-    //authSignature.current = undefined;
     setAuthenticating(true)
     setError(null);
 
     const encryptedWallet = await getWallet();
-
     const ethersWallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, "nurbs")
 
-    // console.log("signer", signer)
-
     if (address && signer && ethersWallet) {
+      console.log("trying!")
       try {
-
+        
+        /*
         const litNodeClient = new LitNodeClient({
           litNetwork: LitNetwork.DatilTest, // DatilDev
           debug: false,
           // checkNodeAttestation: true,
         });
-
-        await litNodeClient.connect();
-        console.log("✅ Connected LitNodeClient to Lit network");
-        console.log("🔄 Getting Session Sigs via an Auth Sig...");
-
+        */
+        if (!litConnected) {
+          await litNodeClient.connect();
+          console.log("✅ Connected LitNodeClient to Lit network");
+          console.log("🔄 Getting Session Sigs via an Auth Sig...");
+          setLitConnected(true)
+        }
+        
         const { capacityDelegationAuthSig } =
           await litNodeClient.createCapacityDelegationAuthSig({
             uses: '1',
@@ -160,9 +175,9 @@ const Home: NextPage = () => {
             capacityTokenId: "25353", // TODO: update October 22
             delegateeAddresses: [address],
           });
-
-        if ( capacityDelegationAuthSig ) console.log("authorized user", capacityDelegationAuthSig);
-        // const expiration = new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString();
+       
+        // if (capacityDelegationAuthSig) console.log("authorized user", capacityDelegationAuthSig);
+        // const capacityDelegationAuthSig = authSig;
 
         const sessionSigs = await litNodeClient.getSessionSigs({
           chain: "ethereum",
@@ -234,6 +249,8 @@ const Home: NextPage = () => {
         console.error(error);
       } finally {
         disconnectWeb3();
+        setLitConnected(false)
+        setAuthenticating(false)
       }
     }
   }
@@ -358,14 +375,20 @@ const Home: NextPage = () => {
   // useEffect() Hooks
   //
 
-  /*
   // automatically get signature after wallet connect and authorize
   useEffect(() => {
-    if (!authSignature.current && isConnected && provider) {
-      generateAuthSig(provider, address);
+
+    const connect = async () => {
+      await litNodeClient.connect();
+      console.log("✅ Connected LitNodeClient to Lit network");
+      console.log("🔄 Getting Session Sigs via an Auth Sig...");
+      setLitConnected(true)
     }
-  }, [isConnected, provider]); // eslint-disable-line react-hooks/exhaustive-deps
-  */
+
+    connect().catch(console.error);
+  }, []);
+  //}, [isConnected, signer]); // eslint-disable-line react-hooks/exhaustive-deps
+  
 
   // limits attempts
   useEffect(() => {
