@@ -28,7 +28,6 @@ import { disconnectWeb3 } from '@lit-protocol/lit-node-client';
 import * as ethers from "ethers";
 
 import game from '../abi/game.json';
-import * as CryptoJS from 'crypto-js';
 
 // noq 1009
 // import keys from '../abi/coinage_keys.json';
@@ -308,6 +307,11 @@ const Home: NextPage = () => {
 
   const decryptString = async (eString: string, eKey: string) => {
     try {
+
+      // manual
+      // const decryptedString = CryptoJS.AES.decrypt(eString, 'gigas').toString(CryptoJS.enc.Utf8);
+      // const obj = JSON.parse(decryptedString)
+
       const payload = {eString: eString, eKey: eKey}
       const response = await axios.post("api/decrypt", payload, {headers: jsonHeader});
       const obj = JSON.parse(response.data.decryptedString)
@@ -495,13 +499,25 @@ const Home: NextPage = () => {
       gameOver ? (
         <div>
           <div className="flex-col items-center">
+            {/*
           <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
           {`Thanks for playing Coinage Trivia ${game.name}!`}
           </p>
+          */}
+          <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
+          {`Coinage Trivia is returning soon!`}
+          </p>
           <p className="subhead3 text-coinage-gray py-2 mb-6">
-            {`The winner was wallet {0xaF7dda...} with a score of 20.`} <br/>
-            {'Game 3 will launch in the near future, open to anyone with a crypto wallet.'}<br/>
-            {'See you soon!'}
+            {'The next game will be open to '}
+            <NextLink className="text-coinage-blue" href="https://www.coinage.media/about#mint">
+            {'Coinage NFT'}
+            </NextLink>
+            {' and '}
+            <NextLink className="text-coinage-blue" href="https://www.coinage.media/trial/mint">
+            {'Coinage Trial Pass'}
+            </NextLink>
+            {' holders'} <br/>
+            {'beginning Tuesday, October 22nd at 10am EST.'} <br/>
           </p>
           </div>
         </div>
@@ -735,10 +751,12 @@ const Home: NextPage = () => {
               {/* Either show the play button or prompt user to connect the wallet */}
               { gameOver ? (
                 <div className="flex flex-col items-center text-center justify-between">
+                {/*
                 <Button modifier="secondary" onClick={() => gotoLeaderboard()}>
                   RESULTS
                 </Button>
-                <p className="w-7/12 subhead3 text-center text-coinage-gray pt-16">
+                */}
+                <p className="w-7/12 subhead3 text-center text-coinage-gray pt-8">
                   {'Sign up for email updates to be notified of your final place, prizes, and future games:'}
                 </p>
                   <EmailSignup title="" />
@@ -916,3 +934,19 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+/*
+gameOver ? (
+  <div>
+    <div className="flex-col items-center">
+    <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
+    {`Thanks for playing Coinage Trivia ${game.name}!`}
+    </p>
+    <p className="subhead3 text-coinage-gray py-2 mb-6">
+      {`The winner was wallet {0xaF7dda...} with a score of 20.`} <br/>
+      {'Game 3 will launch in the near future, open to anyone with a crypto wallet.'}<br/>
+      {'See you soon!'}
+    </p>
+    </div>
+  </div>
+*/
