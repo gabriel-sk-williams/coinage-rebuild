@@ -13,6 +13,8 @@ import { RecordTable } from '../components/RecordTable';
 import PageLoader from '../components/LoadingIndicators/PageLoader';
 import { Footer } from '../components/Footer';
 
+import axios from "axios";
+
 import {
   LitAbility,
   LitAccessControlConditionResource,
@@ -26,7 +28,7 @@ import { disconnectWeb3 } from '@lit-protocol/lit-node-client';
 import * as ethers from "ethers";
 
 import game from '../abi/game.json';
-import * as CryptoJS from 'crypto-js'; // temp?
+import * as CryptoJS from 'crypto-js';
 
 // noq 1009
 // import keys from '../abi/coinage_keys.json';
@@ -92,38 +94,36 @@ const Home: NextPage = () => {
   const {loading, entries, postScore, getWallet } = useVercelRequest();
   const {attempts, getAttempts, increment, decrement } = useKVRequest(address || 'unknown');
 
-
-
-const hasCoinageSuite = [
-  {
-      contractAddress: "0x4776DEFcF622c60C6419CCcc9eE9E9042fadf3F7",
-      standardContractType: "ERC1155" as const,
-      chain: "ethereum" as const,
-      method: "balanceOfBatch",
-      parameters: [
-        ":userAddress,:userAddress,:userAddress",
-        "1,2,3"
-      ],
-      returnValueTest: {
-        "comparator": ">" as const,
-        "value": "0" as const,
-      },
-  },
-  { operator: "or" },
-  {
-      contractAddress: '0xe8B5C935764742cda69eb71b7F01Cf1c4e70b567',
-      standardContractType: 'ERC721' as const,
-      chain: 'base' as const,
-      method: 'balanceOf',
-      parameters: [
-          ":userAddress"
-      ],
-      returnValueTest: {
-          comparator: '>' as const,
-          value: '0' as const
-      }
-  }
-];
+  const hasCoinageSuite = [
+    {
+        contractAddress: "0x4776DEFcF622c60C6419CCcc9eE9E9042fadf3F7",
+        standardContractType: "ERC1155" as const,
+        chain: "ethereum" as const,
+        method: "balanceOfBatch",
+        parameters: [
+          ":userAddress,:userAddress,:userAddress",
+          "1,2,3"
+        ],
+        returnValueTest: {
+          "comparator": ">" as const,
+          "value": "0" as const,
+        },
+    },
+    { operator: "or" },
+    {
+        contractAddress: '0xe8B5C935764742cda69eb71b7F01Cf1c4e70b567',
+        standardContractType: 'ERC721' as const,
+        chain: 'base' as const,
+        method: 'balanceOf',
+        parameters: [
+            ":userAddress"
+        ],
+        returnValueTest: {
+            comparator: '>' as const,
+            value: '0' as const
+        }
+    }
+  ];
 
   async function authenticate(
     address: `0x${string}` | undefined,
@@ -138,7 +138,7 @@ const hasCoinageSuite = [
 
     const ethersWallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, "nurbs")
 
-    console.log("signer", signer)
+    // console.log("signer", signer)
 
     if (address && signer && ethersWallet) {
       try {
@@ -178,29 +178,22 @@ const hasCoinageSuite = [
             expiration,
             resourceAbilityRequests,
           }) => {
+
             const toSign = await createSiweMessage({
-              uri, //: lit:session:c5e8b9536e4fdc87fa5bed9768a21cf5169a1910e116c040a5a2fa7c39aa0bc0
+              uri,
               expiration,
               resources: resourceAbilityRequests,
               // Vercel returns localhost
               // manually adding fixes the domain problem but creates a mismatch
               // domain: "https://coinage-rebuild.vercel.app/",
-              domain: "https://trivia.coinage.media/",
-              statement: 'Please sign for access to the Coinage Trivia Challenge!',
+              // domain: "https://trivia.coinage.media/",
+              domain: process.env.DOMAIN, // localhost
+              statement: 'Please sign for access to the Coinage Trivia Challenge! ',
               walletAddress: await signer.getAddress(),
               nonce: await litNodeClient.getLatestBlockhash(),
               litNodeClient,
             });
 
-            console.log(toSign)
-
-            const authsig = await generateAuthSig({
-              signer: signer,
-              toSign,
-            });
-
-            console.log("as", authsig)
-    
             return await generateAuthSig({
               signer: signer,
               toSign,
@@ -303,16 +296,19 @@ const hasCoinageSuite = [
     return level.length ? level === answer.current : false;
   };
 
-  const decryptString = async (eString: string, eKey: string) => {
-    // TODO: lit protocol
-    try {
+  const jsonHeader = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
 
-      const decryptedString = CryptoJS.AES.decrypt(eString, 'gigas').toString(CryptoJS.enc.Utf8);
-      const obj = JSON.parse(decryptedString)
+  const decryptString = async (eString: string, eKey: string) => {
+    try {
+      const payload = {eString: eString, eKey: eKey}
+      const response = await axios.post("api/decrypt", payload, {headers: jsonHeader});
+      const obj = JSON.parse(response.data.decryptedString)
 
       if (obj.question) return obj.question
       if (obj.answer) return obj.answer
-      //return obj.question
 
     } catch (error) {
       console.log('Decryption error:', error);
@@ -378,14 +374,12 @@ const hasCoinageSuite = [
   useEffect(() => {
 
     // getResults after game is over
-    
     if (entries) {
       let stamped = entries.map(entry => ({
         address: entry.address,
         score: entry.score,
         timestamp: convertTimestamp(entry.timestamp)
       }));
-      console.log(stamped);
     }
     
     setIsLoadingResults(loading);
@@ -433,7 +427,7 @@ const hasCoinageSuite = [
       var now = new Date().getTime();
 
       if (now < quizEnds) {
-        console.log("tick");
+        // console.log("tick");
       } else if (active && now > quizEnds) {
         clearInterval(updateTimer);
         endQuiz("Time's up!");
@@ -727,7 +721,9 @@ const hasCoinageSuite = [
                 {'THE COINAGE TRIVIA CHALLENGE!'}
               </p>
             </div>
+
             <Image src="/Hero.png" alt="Coinage Media Trivia" width={400} height={400} />
+
             <div className="w-10/12 flex flex-col items-center text-center justify-between">
               {displayInfoText()}
               {/* Either show the play button or prompt user to connect the wallet */}
@@ -741,7 +737,13 @@ const hasCoinageSuite = [
                 </p>
                   <EmailSignup title="" />
               </div>
-
+              
+              ) : isConnected && authenticating ? (
+                <div className="pt-4">
+                  <Button modifier="primary">
+                    AUTHENTICATING...
+                  </Button>
+                </div>
               ) : isConnected && !authorized ? (
                 <div className="pt-4">
                   <Button modifier="primary" onClick={() => authenticate(address, signer)}>
@@ -909,6 +911,11 @@ const hasCoinageSuite = [
 
 export default Home;
 
+/*
+//const decryptedString = CryptoJS.AES.decrypt(eString, 'gigas').toString(CryptoJS.enc.Utf8);
+//const obj = JSON.parse(decryptedString)
+*/
+
 
 /*
 const result = await LitJsSdk.decryptToString({
@@ -918,4 +925,13 @@ const result = await LitJsSdk.decryptToString({
   dataToEncryptHash: eKey,
   sessionSigs,
 }, client);
+*/
+
+/*
+console.log(toSign)
+const authsig = await generateAuthSig({
+  signer: signer,
+  toSign,
+});
+console.log("as", authsig)
 */

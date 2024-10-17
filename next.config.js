@@ -34,6 +34,7 @@ const nextConfig = {
     POSTGRES_URL: process.env.POSTGRES_URL,
     POSTGRES_URL_NON_POOLING: process.env.POSTGRES_URL_NON_POOLING,
     POSTGRES_USER: process.env.POSTGRES_USER,
+    DOMAIN: process.env.DOMAIN,
   },
   reactStrictMode: true,
   webpack: (config) => {

@@ -1,5 +1,3 @@
-
-
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -54,7 +52,6 @@ export function useVercelRequest() {
             setStatus(null);
             setLoading(true);
             const response = await axios.get("api/leaderboard");
-            console.log(response.data.leaderboard.rows);
             setEntries(response.data.leaderboard.rows);
         } catch (error: any) {
             setLoading(false);

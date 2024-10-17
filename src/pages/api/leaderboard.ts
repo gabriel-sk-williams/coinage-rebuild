@@ -7,21 +7,6 @@ export default async function handler(
 ) {
   const client = await db.connect();
 
-  /*
-  try {
-    await client.sql`
-    CREATE TABLE Leaderboard ( 
-        Address varchar(255), 
-        Score smallint, 
-        Timestamp varchar(255) UNIQUE
-        );
-    `;
-  } catch (error) {
-    console.log("Leaderboard table already created")
-    return response.status(500).json({ error });
-  }
-  */
-
   switch (request.method) {
 
     case "GET":
