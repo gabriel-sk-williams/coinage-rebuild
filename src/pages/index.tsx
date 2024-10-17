@@ -151,16 +151,8 @@ const Home: NextPage = () => {
     const ethersWallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, "nurbs")
 
     if (address && signer && ethersWallet) {
-      console.log("trying!")
       try {
         
-        /*
-        const litNodeClient = new LitNodeClient({
-          litNetwork: LitNetwork.DatilTest, // DatilDev
-          debug: false,
-          // checkNodeAttestation: true,
-        });
-        */
         if (!litConnected) {
           await litNodeClient.connect();
           console.log("✅ Connected LitNodeClient to Lit network");
@@ -177,7 +169,6 @@ const Home: NextPage = () => {
           });
        
         // if (capacityDelegationAuthSig) console.log("authorized user", capacityDelegationAuthSig);
-        // const capacityDelegationAuthSig = authSig;
 
         const sessionSigs = await litNodeClient.getSessionSigs({
           chain: "ethereum",
@@ -199,11 +190,7 @@ const Home: NextPage = () => {
               uri,
               expiration,
               resources: resourceAbilityRequests,
-              // Vercel returns localhost
-              // manually adding fixes the domain problem but creates a mismatch
-              // domain: "https://coinage-rebuild.vercel.app/",
-              // domain: "https://trivia.coinage.media/",
-              domain: process.env.DOMAIN, // localhost
+              domain: process.env.DOMAIN, // localhost | trivia.coinage.media
               statement: 'Please sign for access to the Coinage Trivia Challenge!',
               walletAddress: await signer.getAddress(),
               nonce: await litNodeClient.getLatestBlockhash(),
@@ -257,7 +244,6 @@ const Home: NextPage = () => {
 
   const startQuiz = async () => {
     if (address && authorized) {
-      // await client.connect(); // TODO: Lit Protocol
       increment(address.toString());
       setShowMain(false);
       setLoadingQuiz(true);
@@ -387,9 +373,7 @@ const Home: NextPage = () => {
 
     connect().catch(console.error);
   }, []);
-  //}, [isConnected, signer]); // eslint-disable-line react-hooks/exhaustive-deps
   
-
   // limits attempts
   useEffect(() => {
     if (attempts > 4) setOutOfAttempts(true);
@@ -461,7 +445,6 @@ const Home: NextPage = () => {
 
     return () => {
       clearInterval(updateTimer);
-      // disconnectWeb3(); // TODO: lit protocol
     };
 
   }, [quizEnds, active]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -498,9 +481,7 @@ const Home: NextPage = () => {
   // Clear auth sig if wallet is disconnected
   useEffect(() => {
     if (isDisconnected) {
-      // disconnectWeb3(); // TODO: lit protocol
       setAuthorized(false);
-      // authSignature.current = undefined;
     }
   }, [isDisconnected]);
 
@@ -935,28 +916,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-/*
-//const decryptedString = CryptoJS.AES.decrypt(eString, 'gigas').toString(CryptoJS.enc.Utf8);
-//const obj = JSON.parse(decryptedString)
-*/
-
-
-/*
-const result = await LitJsSdk.decryptToString({
-  accessControlConditions: hasEth,
-  chain: game.chain,
-  ciphertext: eString,
-  dataToEncryptHash: eKey,
-  sessionSigs,
-}, client);
-*/
-
-/*
-console.log(toSign)
-const authsig = await generateAuthSig({
-  signer: signer,
-  toSign,
-});
-console.log("as", authsig)
-*/
