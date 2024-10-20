@@ -35,7 +35,7 @@ const nextConfig = {
     POSTGRES_URL_NON_POOLING: process.env.POSTGRES_URL_NON_POOLING,
     POSTGRES_USER: process.env.POSTGRES_USER,
     DOMAIN: process.env.DOMAIN,
-    SECRET: process.env.SECRET,
+    // SECRET: process.env.SECRET,
   },
   reactStrictMode: true,
   webpack: (config) => {

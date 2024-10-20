@@ -67,7 +67,7 @@ const Home: NextPage = () => {
   const [litConnected, setLitConnected] = useState<boolean>(false);
   const [outOfAttempts, setOutOfAttempts] = useState<boolean>(false);
 
-  const [gameOver, setGameOver] = useState<boolean>(false); // set game on/off
+  const [gameOver, setGameOver] = useState<boolean>(true); // set game on/off
   const [showMain, setShowMain] = useState<boolean>(true);
   const [loadingQuiz, setLoadingQuiz] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
@@ -300,22 +300,14 @@ const Home: NextPage = () => {
     return level.length ? level === answer.current : false;
   };
 
-  const jsonHeader = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-
   const decryptString = async (eString: string, eKey: string) => {
     try {
-
-      // manual
-      //const ex = process.env.SECRET as string
-      //const decryptedString = CryptoJS.AES.decrypt(eString, ex).toString(CryptoJS.enc.Utf8);
-      //const obj = JSON.parse(decryptedString)
-
       // api
       const payload = {eString: eString, eKey: eKey}
-      const response = await axios.post("api/decrypt", payload, {headers: jsonHeader});
+      const response = await axios.post("api/decrypt", payload, {headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }});
       const obj = JSON.parse(response.data.decryptedString)
 
       if (obj.question) return obj.question
@@ -519,7 +511,7 @@ const Home: NextPage = () => {
             {'Coinage Trial Pass'}
             </NextLink>
             {' holders'} <br/>
-            {'beginning Tuesday, October 22nd at 10am EST.'} <br/>
+            {/*{'beginning Tuesday, October 22nd at 10am EST.'} <br/>*/}
           </p>
           </div>
         </div>
@@ -936,19 +928,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-/*
-gameOver ? (
-  <div>
-    <div className="flex-col items-center">
-    <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
-    {`Thanks for playing Coinage Trivia ${game.name}!`}
-    </p>
-    <p className="subhead3 text-coinage-gray py-2 mb-6">
-      {`The winner was wallet {0xaF7dda...} with a score of 20.`} <br/>
-      {'Game 3 will launch in the near future, open to anyone with a crypto wallet.'}<br/>
-      {'See you soon!'}
-    </p>
-    </div>
-  </div>
-*/
