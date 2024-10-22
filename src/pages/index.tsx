@@ -865,7 +865,7 @@ const Home: NextPage = () => {
             <Image src="/Leaderboard_Image.png" alt="Coinage Media Trivia" width={500} height={100} />
             <div className="py-6">
               <p className="subhead3 text-center text-coinage-orange mb-2 mt-1">
-                Trivia Game Final Results
+                Coinage Trivia Top Scores
               </p>
 
               <table className="table-fixed">
