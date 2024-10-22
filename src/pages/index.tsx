@@ -527,7 +527,11 @@ const Home: NextPage = () => {
           {'You will need a Coinage membership pass in your wallet to play.'} <br />
           {"Don't have one? "}
           <NextLink className="text-coinage-blue" href="https://www.coinage.media/about#mint">
-            {'Mint now.'}
+            {'Mint now'}
+          </NextLink>
+            {' or pick up a '}
+          <NextLink className="text-coinage-blue" href="https://www.coinage.media/trial/mint">
+            {'Coinage Trial Pass.'}
           </NextLink>
         </p>
       ) : outOfAttempts ? (
