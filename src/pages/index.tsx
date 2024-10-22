@@ -67,7 +67,7 @@ const Home: NextPage = () => {
   const [litConnected, setLitConnected] = useState<boolean>(false);
   const [outOfAttempts, setOutOfAttempts] = useState<boolean>(false);
 
-  const [gameOver, setGameOver] = useState<boolean>(true); // set game on/off
+  const [gameOver, setGameOver] = useState<boolean>(false); // set game on/off
   const [showMain, setShowMain] = useState<boolean>(true);
   const [loadingQuiz, setLoadingQuiz] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
@@ -163,7 +163,7 @@ const Home: NextPage = () => {
           await litNodeClient.createCapacityDelegationAuthSig({
             uses: '1',
             dAppOwnerWallet: ethersWallet,
-            capacityTokenId: "25353", // TODO: update October 22
+            capacityTokenId: "32213", // TODO: update November 1
             delegateeAddresses: [address],
           });
        
@@ -861,7 +861,7 @@ const Home: NextPage = () => {
             <Image src="/Leaderboard_Image.png" alt="Coinage Media Trivia" width={500} height={100} />
             <div className="py-6">
               <p className="subhead3 text-center text-coinage-orange mb-2 mt-1">
-                Practice Game Final Results
+                Trivia Game Final Results
               </p>
 
               <table className="table-fixed">
