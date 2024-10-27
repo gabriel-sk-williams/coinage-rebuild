@@ -30,10 +30,6 @@ import * as ethers from "ethers";
 import game from '../abi/game.json';
 
 // noq 1009
-// import keys from '../abi/coinage_keys.json';
-// import pairs from '../abi/coinage_pairs.json';
-
-// noq 99
 import keys from '../abi/practice_keys.json';
 import pairs from '../abi/local_pairs.json';
 
@@ -46,8 +42,6 @@ import {useKVRequest} from '../hooks/useKV';
 import {useAccount} from 'wagmi';
 import {EmailSignup} from '../components/EmailSignup';
 
-//import { createWalletClient, parseEther } from 'viem';
-//import { mainnet, goerli, sepolia } from 'viem/chains';
 import { useWalletClient } from 'wagmi';
 import { clientToSigner, useEthersSigner} from '../hooks/useEthers';
 
@@ -217,11 +211,10 @@ const Home: NextPage = () => {
           sessionSigs,
         }, litNodeClient);
 
-        setAuthenticating(false)
-
         if (!result) {
           // flag and kick
           setFlagged(true);
+          setAuthenticating(false);
           console.log('You do NOT have a Coinage NFT');
         } else {
           setFlagged(false);
@@ -358,6 +351,10 @@ const Home: NextPage = () => {
   //
   // useEffect() Hooks
   //
+
+  useEffect(() => {
+    setAuthenticating(false)
+  }, [isConnected])
 
   // automatically get signature after wallet connect and authorize
   useEffect(() => {
@@ -865,7 +862,7 @@ const Home: NextPage = () => {
             <Image src="/Leaderboard_Image.png" alt="Coinage Media Trivia" width={500} height={100} />
             <div className="py-6">
               <p className="subhead3 text-center text-coinage-orange mb-2 mt-1">
-                Coinage Trivia Top Scores
+                Coinage Trivia Top Ten
               </p>
 
               <table className="table-fixed">
