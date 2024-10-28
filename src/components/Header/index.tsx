@@ -46,7 +46,7 @@ export const Header = () => {
         <div className="hidden tab:flex">
           <div className="flex gap-2 items-center justify-end">
 
-            <NextLink href="https://www.coinage.media/about#mint">
+            <NextLink href="https://app.unlock-protocol.com/checkout?id=a487f373-df67-4356-b750-a510e4822490">
               <Button modifier="secondary" className="">
                 MINT
               </Button>
@@ -63,37 +63,3 @@ export const Header = () => {
     </header>
   )
 }
-
-/*
-  const desktopStyles = cx({
-    "hidden tab:flex": showMobileMenu,
-    flex: !showMobileMenu
-  });
-
-  const isActive = false; // true -> filled orange
-  const pName = cx("justify-center items-center gap-2", {
-    "hidden tab:flex": !isActive,
-    flex: isActive
-  });
-
-  const spanName = "border-current text-coinage-blue border-coinage-blue flex items-center justify-center rounded-full min-w-[120px] min-h-[42px] border-[1px] mono1 btn-hover active:bg-coinage-blueAltLight";
-*/
-
-// {/*<Image src='/CoinageLogo.svg' alt='Coinage Media' width={105} height={46} />*/}
-/*
-
-
-  <NextLink href="/mint" className="">
-    <p className={pName}>
-      <span className={spanName}>
-        <span
-          className={cx("btn", {
-            "text-coinage-orange": isActive,
-            "text-coinage-blue": isPastStep
-          })}>
-          {"MINT"}
-        </span>
-      </span>
-    </p>
-  </NextLink>
-*/

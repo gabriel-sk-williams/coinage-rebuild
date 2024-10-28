@@ -504,7 +504,7 @@ const Home: NextPage = () => {
             {'Coinage NFT'}
             </NextLink>
             {' and '}
-            <NextLink className="text-coinage-blue" href="https://www.coinage.media/trial/mint">
+            <NextLink className="text-coinage-blue" href="https://app.unlock-protocol.com/checkout?id=a487f373-df67-4356-b750-a510e4822490">
             {'Coinage Trial Pass'}
             </NextLink>
             {' holders'} <br/>
@@ -527,7 +527,7 @@ const Home: NextPage = () => {
             {'Mint now'}
           </NextLink>
             {' or pick up a '}
-          <NextLink className="text-coinage-blue" href="https://www.coinage.media/trial/mint">
+          <NextLink className="text-coinage-blue" href="https://app.unlock-protocol.com/checkout?id=a487f373-df67-4356-b750-a510e4822490">
             {'Coinage Trial Pass.'}
           </NextLink>
         </p>
@@ -718,7 +718,7 @@ const Home: NextPage = () => {
                 <Link
                   className={""} ///*tab:!max-w-none tab:!w-auto*/
                   modifier={flagged ? 'flagged' : 'secondary'}
-                  href="https://www.coinage.media/about#mint">
+                  href="https://app.unlock-protocol.com/checkout?id=a487f373-df67-4356-b750-a510e4822490">
                   {"MINT"}
                 </Link>
 
