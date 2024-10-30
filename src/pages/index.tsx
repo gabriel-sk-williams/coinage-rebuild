@@ -157,7 +157,7 @@ const Home: NextPage = () => {
           await litNodeClient.createCapacityDelegationAuthSig({
             uses: '1',
             dAppOwnerWallet: ethersWallet,
-            capacityTokenId: "32213", // TODO: update November 1
+            capacityTokenId: "39653", // TODO: update November 14
             delegateeAddresses: [address],
           });
        
