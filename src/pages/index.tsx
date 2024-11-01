@@ -491,8 +491,9 @@ const Home: NextPage = () => {
         <div>
           <div className="flex-col items-center">
             <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
-            {`Thanks for playing Coinage Trivia ${game.name}!`}
+            {`Thanks for playing the Coinage Trivia ${game.name}!`}
             </p>
+          {/*
           <p className="subhead3 text-coinage-gray py-2 mb-6">
             {'The next game will be open to '}
             <NextLink className="text-coinage-blue" href="https://www.coinage.media/about#mint">
@@ -503,8 +504,13 @@ const Home: NextPage = () => {
             {'Coinage Trial Pass'}
             </NextLink>
             {' holders'} <br/>
-            {/*{'beginning Tuesday, October 22nd at 10am EST.'} <br/>*/}
           </p>
+          */}
+          <div className="pt-4">
+            <Button modifier="secondary" onClick={gotoLeaderboard}>
+              RESULTS
+            </Button>
+          </div>
           </div>
         </div>
       ) : !address ? (
