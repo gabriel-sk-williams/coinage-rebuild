@@ -61,7 +61,7 @@ const Home: NextPage = () => {
   const [litConnected, setLitConnected] = useState<boolean>(false);
   const [outOfAttempts, setOutOfAttempts] = useState<boolean>(false);
 
-  const [gameOver, setGameOver] = useState<boolean>(false); // set game on/off
+  const [gameOver, setGameOver] = useState<boolean>(true); // set game on/off
   const [showMain, setShowMain] = useState<boolean>(true);
   const [loadingQuiz, setLoadingQuiz] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
@@ -490,14 +490,9 @@ const Home: NextPage = () => {
       gameOver ? (
         <div>
           <div className="flex-col items-center">
-            {/*
-          <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
-          {`Thanks for playing Coinage Trivia ${game.name}!`}
-          </p>
-          */}
-          <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
-          {`Coinage Trivia is returning soon!`}
-          </p>
+            <p className="subhead1 text-coinage-orange py-2 mt-4 mb-2">
+            {`Thanks for playing Coinage Trivia ${game.name}!`}
+            </p>
           <p className="subhead3 text-coinage-gray py-2 mb-6">
             {'The next game will be open to '}
             <NextLink className="text-coinage-blue" href="https://www.coinage.media/about#mint">
