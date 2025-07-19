@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# coinage-rebuild
-Coinage / Coinbase trivia game
-=======
 # On-chain trivia with Coinage Media
 Next.js / Lit Protocol
 
@@ -12,4 +8,3 @@ Competitive trivia context developed and deployed as a white label promotion for
 The event ran several weeks and offered prizes to Coinage NFT holders at the top of the leaderboard.
 
 ![Leaderboard](/../media/png/leaderboard.png?raw=true "Leaderboard")
->>>>>>> 7dfd9c031fdf41dd078fbeef2af5fe54b1142442
