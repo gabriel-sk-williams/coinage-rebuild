@@ -10,8 +10,6 @@ export default async function handler(
         case "POST":
           try {
             var eString = request.body.eString
-            //var secret = process.env.SECRET as string
-            
             const decryptedString = CryptoJS.AES.decrypt(eString, "gigas").toString(CryptoJS.enc.Utf8);
             return response.status(200).json({ decryptedString: decryptedString });
           } catch(error) {

@@ -4,19 +4,10 @@ import {Button} from '../components/Actions';
 import NextLink from 'next/link';
 import { Footer } from '../components/Footer';
 
-// import bg from '../assets/termsHeader.png';
-// import {CutoutAsset} from '../components/CutoutAsset/CutoutAsset';
-
 const Terms: NextPage = () => {
   return (
     <>
       <div className="roadmap-header flex h-[80vh] tab:h-[66vh] bg-coinage-purple relative overflow-hidden">
-        {/* <div className="hidden tab:flex absolute overflow-hidden z-0 right-0  w-2/3 h-full about-image-holder">
-          <CutoutAsset image={bg} right={false} color="purple" />
-        </div>
-        <div className="tab:hidden absolute bottom-0 overflow-hidden z-0 right-0  w-full h-[65%] about-image-holder">
-          <CutoutAsset image={bg} mobile={true} color="purple" />
-        </div> */}
         <div className=" flex mt-[60px] tab:mt-auto mb-auto z-1 relative mx-[auto] max-w-[1200px] w-full px-4">
           <h1 className=" display1 text-coinage-white max-w-[720px]">Terms &amp; Conditions.</h1>
         </div>

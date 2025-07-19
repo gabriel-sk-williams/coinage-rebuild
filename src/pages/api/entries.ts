@@ -7,9 +7,6 @@ export default async function handler(
 ) {
   const client = await db.connect();
 
-  // DROP TABLE Leaderboard;
-  // DELETE FROM Leaderboard;
-
   switch (request.method) {
 
     case "GET":
